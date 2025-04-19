@@ -20,6 +20,18 @@ rolling_3_temp = st.number_input("3-Hour Rolling Temp (°C)", value=21.9)
 rolling_14_temp = st.number_input("14-Hour Rolling Temp (°C)", value=21.5)
 rolling_3_hum = st.number_input("3-Hour Rolling Humidity", min_value=0.0, max_value=1.0, value=0.73)
 rolling_14_hum = st.number_input("14-Hour Rolling Humidity", min_value=0.0, max_value=1.0, value=0.70)
+predictors = ['Temperature (C)', 'Apparent Temperature (C)', 'Humidity',
+              'Wind Speed (km/h)', 'Pressure (millibars)',
+              'rolling_3_Temperature (C)', 'rolling_14_Temperature (C)',
+              'rolling_3_Humidity', 'rolling_14_Humidity']
+
+X = weather[predictors]
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Save this scaler after fitting on all 9 features
+joblib.dump(scaler, 'scaler.pkl')
+
 
 if st.button("Predict Temperature"):
     input_features = np.array([
