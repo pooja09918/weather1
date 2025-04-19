@@ -2,7 +2,7 @@ import streamlit as st
 import joblib
 import numpy as np
 
-# Load model and scaler
+# Load the trained model and scaler
 model = joblib.load("ridge_model.pkl")
 scaler = joblib.load("scaler.pkl")
 
@@ -20,25 +20,15 @@ rolling_3_temp = st.number_input("3-Hour Rolling Temp (°C)", value=21.9)
 rolling_14_temp = st.number_input("14-Hour Rolling Temp (°C)", value=21.5)
 rolling_3_hum = st.number_input("3-Hour Rolling Humidity", min_value=0.0, max_value=1.0, value=0.73)
 rolling_14_hum = st.number_input("14-Hour Rolling Humidity", min_value=0.0, max_value=1.0, value=0.70)
-predictors = ['Temperature (C)', 'Apparent Temperature (C)', 'Humidity',
-              'Wind Speed (km/h)', 'Pressure (millibars)',
-              'rolling_3_Temperature (C)', 'rolling_14_Temperature (C)',
-              'rolling_3_Humidity', 'rolling_14_Humidity']
 
-X = weather[predictors]
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
-# Save this scaler after fitting on all 9 features
-joblib.dump(scaler, 'scaler.pkl')
-
-
+# Prediction logic
 if st.button("Predict Temperature"):
     input_features = np.array([
         temperature, apparent_temp, humidity, wind_speed, pressure,
         rolling_3_temp, rolling_14_temp, rolling_3_hum, rolling_14_hum
     ]).reshape(1, -1)
 
+    # Use the pre-trained scaler
     input_scaled = scaler.transform(input_features)
     prediction = model.predict(input_scaled)
 
